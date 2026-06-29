@@ -7,7 +7,10 @@ def Logins():
     if request.method == 'POST':
         name = request.form["username"]
         name2 = request.form["password"]
-        return f"Hello {name} {name2}, POST request received"
+        if name == "BOB" and name2 == "1234":
+            return render_template('classitem.html')
+        return render_template('IncorLogin.html')
+          
     return render_template('Login.html')
 
 @app.route('/itemwebsite', methods=['GET', 'POST'])
