@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="/static/cssP/Looksnice.css">
-<title>Login</title>
+<title>Sign Up</title>
 </head>
 <body>
 <div class="side-sidebar side-bar-block side-border-right" id="mySidebar">
@@ -24,18 +24,24 @@
   </div>
 </div>
 <div class="main">
-  <h3>Login</h3>
+  <h3>Create an account</h3>
+  {% if created %}
+    <p style="color:green">Account created for <strong>{{ created }}</strong></p>
+    <p><a href="/log">Back to login</a></p>
+  {% endif %}
+  {% if error %}
+    <p style="color:red">{{ error }}</p>
+  {% endif %}
   <form method="post">
     <label>Username</label>
-    <input type="text" name="usernamelogin" required>
+    <input type="text" name="newusername" required>
     <br><br>
     <label>Password</label>
-    <input type="password" name="passwordlogin" required>
+    <input type="password" name="newpassword" required>
     <br><br>
     <input type="submit" value="Submit">
   </form>
-  <p>Don't have an account? <a href="/signup">Sign up here</a></p>
-  <p><a href="/forgot_password">Forgot password?</a></p>
+  <p>Already have an account? <a href="/log">Log in here</a></p>
 </div>
 <script src="/static/js/site.js"></script>
 </body>

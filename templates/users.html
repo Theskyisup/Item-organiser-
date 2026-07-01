@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/static/cssP/Looksnice.css">
+<title>Registered Users</title>
+</head>
+<body>
+<div class="side-sidebar side-bar-block side-border-right" id="mySidebar">
+  <button onclick="side_close()" class="side-bar-item side-large side-button side-teal">Close &times;</button>
+  <a href="/" class="side-bar-item side-button">Home</a>
+  <a href="/log" class="side-bar-item side-button">Login</a>
+  <a href="/signup" class="side-bar-item side-button">Signup</a>
+</div>
+<div id="sidebarOverlay" onclick="side_close()"></div>
+<div class="navbar">
+  <button class="side-button side-teal side-xlarge menu-toggle" onclick="side_open()">☰</button>
+  <a href="/">Home</a>
+  <div class="navbar-right">
+    <a href="/log">Login</a>
+    <a href="/signup">Create account</a>
+    <a href="#Help">Feedback account</a>
+  </div>
+</div>
+<div class="main">
+  <h2>Registered Users</h2>
+  <p>Last update: <span id="last-ts">-</span></p>
+  <div id="users-area"><p>Loading...</p></div>
+  <p><a href="/">Back to login</a></p>
+</div>
+<script>
+async function fetchUsers() {
+  try {
+    const r = await fetch('/users_data');
+    if (!r.ok) throw new Error('Network');
+    const j = await r.json();
+    const users = j.users || [];
+    const container = document.getElementById('users-area');
+    if (users.length === 0) {
+      container.innerHTML = '<p>No users found.</p>';
+    } else {
+      let html = '<table><tr><th>ID</th><th>Username</th><th>Password</th></tr>';
+      for (const u of users) {
+        html += `<tr><td>${u.id}</td><td>${u.username}</td><td>${u.password}</td></tr>`;
+      }
+      html += '</table>';
+      container.innerHTML = html;
+    }
+    document.getElementById('last-ts').textContent = new Date((j.ts || Date.now()) * 1000).toLocaleString();
+  } catch (e) {
+    document.getElementById('users-area').innerHTML = '<p style="color:red">Error loading users</p>';
+  }
+}
+fetchUsers();
+setInterval(fetchUsers, 2000);
+</script>
+<script src="/static/js/site.js"></script>
+</body>
+</html>

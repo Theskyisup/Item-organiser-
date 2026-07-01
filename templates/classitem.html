@@ -1,58 +1,232 @@
-<!DOCTYPE type>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<style>
-/* Example: Setting font family, size, and style */
-body { font-family: Arial, Helvetica, sans-serif; /* Preferred font, fallback fonts */
-    font-size: 16px; /* Base font size */
-    color: #333; /* Text color */
-}
-
-h1 { font-family: 'Times New Roman', Times, serif; font-weight: bold;}
-
-p {    font-family: Georgia, serif;    font-style: italic;}
-</style>
 <meta charset="UTF-8">
-<title> PLACEHOLDER </title>
-<link rel="icon" type="image/jpg" href="C:\Users\josep\OneDrive\Desktop\Software Ass 3 2026 term 2\Project\static\images\Test1.jpg">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Class Item</title>
+<link rel="stylesheet" href="/static/cssP/Looksnice.css">
 </head>
-
-<header style=background-color:purple>
-    <h1> This is a header </h1>
-</header>
-
-<nav style=background-color:cyan>
-    <h1> This is a nav </h1>
-    <div class="topnav">
-  <a class="active" href="#home">Home</a>
-  <a href="#about">About</a>
-  <a href="#contact">Contact</a>
-  <form method="post">
-    <input type="text" placeholder="Search.." name="itemname">
-    <br></br>
-    <input type="submit" value="Submit">
-  </form>
+<body>
+<div class="side-sidebar side-bar-block side-border-right" id="mySidebar">
+  <button onclick="side_close()" class="side-bar-item side-large side-button side-teal">Close &times;</button>
+  <a href="/" class="side-bar-item side-button">Home</a>
+  <a href="/log" class="side-bar-item side-button">Login</a>
+  <a href="/signup" class="side-bar-item side-button">Signup</a>
 </div>
-</nav>
-
-  <section style=background-color:aquamarine>
-    <style> 
-     p{ 
-        background-color: rgb(221, 117, 181)
-     } </style> 
-
-     <h1> This is working </h1>
-    <img src="C:\Users\josep\OneDrive\Desktop\Software Ass 3 2026 term 2\Project\static\images\Test1.jpg" alt="Cars7" width="500" height="500">
- <h1>Heading Example</h1>
-<p>This is a paragraph with a custom font style.</p>
-    </section>
-    
-<aside style=background-color:pink>
-  <img src="C:\Users\josep\OneDrive\Desktop\Software Ass 3 2026 term 2\Project\static\images\Test1.jpg" alt="Cars7" width="300" height="300">
-</aside>
-
-<article style=background-color:yellow>
-    <h1> This is an article </h1>
-</article>
-
+<div id="sidebarOverlay" onclick="side_close()"></div>
+<div class="navbar">
+  <button class="side-button side-teal side-xlarge menu-toggle" onclick="side_open()">☰</button>
+  <a href="/">Home</a>
+  <div class="navbar-right">
+    {% if not logged_in %}
+      <a href="/log">Login</a>
+      <a href="/signup">Create account</a>
+    {% endif %}
+    {% if logged_in %}
+      <a href="/logout">Logout</a>
+    {% endif %}
+    <a href="#Help">Feedback account</a>
+  </div>
+</div>
+<div class="main">
+  <header class="page-header">
+    <h1>Class Item</h1>
+    {% if logged_in %}
+      <p>Welcome, {{ username }}!</p>
+    {% endif %}
+  </header>
+  <nav class="section-box">
+    <h2>Navigation</h2>
+    <div class="topnav">
+      <a class="active" href="/log">Home</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+      <form method="post" class="form-search">
+        <input type="text" placeholder="Search.." name="itemname">
+        <input type="submit" value="Submit">
+      </form>
+    </div>
+  </nav>
+  <section class="section-box">
+    <h2>This is working</h2>
+    <img src="/static/images/Test1.jpg" alt="Test image" width="500" height="500">
+    <h3>Heading Example</h3>
+    <p>This is a paragraph with a custom font style.</p>
+  </section>
+  <section class="section-box item-sorter">
+    <h2>Item Sorter</h2>
+    <form id="itemSorterForm">
+      <input id="itemId" type="hidden" name="itemId" value="">
+      <div>
+        <label for="itemName">Item name</label>
+        <input id="itemName" type="text" name="itemName" placeholder="e.g. Apple" required>
+      </div>
+      <div>
+        <label for="itemCost">Cost</label>
+        <input id="itemCost" type="number" name="itemCost" step="0.01" min="0" placeholder="e.g. 3.50" required>
+      </div>
+      <div>
+        <label for="itemQty">Quantity</label>
+        <input id="itemQty" type="number" name="itemQty" min="1" placeholder="e.g. 5" required>
+      </div>
+      <div>
+        <label for="itemCategory">Category</label>
+        <input id="itemCategory" type="text" name="itemCategory" placeholder="e.g. Fruit">
+      </div>
+      <div style="display:flex; align-items:flex-end; gap:8px;">
+        <button type="submit" id="itemSubmitButton">Add item</button>
+        <button type="button" id="cancelEditButton" style="display:none;">Cancel</button>
+      </div>
+    </form>
+    <table id="itemTable">
+      <thead>
+        <tr>
+          <th data-sort="name">Item</th>
+          <th data-sort="category">Category</th>
+          <th data-sort="cost">Cost</th>
+          <th data-sort="qty">Quantity</th>
+          <th data-sort="total">Total</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </section>
+  <aside class="aside-box">
+    <h2>Sidebar</h2>
+    <img src="/static/images/Test1.jpg" alt="Test image" width="300" height="300">
+  </aside>
+  <article class="article-box">
+    <h2>Article</h2>
+    <p>This is an article area styled to match the other pages.</p>
+  </article>
+</div>
+<script>
+const items = [];
+let currentSort = { column: 'name', ascending: true };
+function formatCurrency(value) {
+  return Number(value).toFixed(2);
+}
+function renderItemTable() {
+  const tbody = document.querySelector('#itemTable tbody');
+  tbody.innerHTML = '';
+  items.forEach(item => {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${item.name}</td>
+      <td>${item.category}</td>
+      <td>${formatCurrency(item.cost)}</td>
+      <td>${item.qty}</td>
+      <td>${formatCurrency(item.total)}</td>
+      <td>
+        <button type="button" class="edit-item-btn" data-id="${item.id}">Edit</button>
+        <button type="button" class="remove-item-btn" data-id="${item.id}">Remove</button>
+      </td>
+    `;
+    tbody.appendChild(row);
+  });
+  document.querySelectorAll('.edit-item-btn').forEach(button => {
+    button.addEventListener('click', () => startEditItem(button.dataset.id));
+  });
+  document.querySelectorAll('.remove-item-btn').forEach(button => {
+    button.addEventListener('click', () => removeItem(button.dataset.id));
+  });
+}
+function sortItems(column) {
+  currentSort.ascending = currentSort.column === column ? !currentSort.ascending : true;
+  currentSort.column = column;
+  items.sort((a, b) => {
+    const aValue = a[column];
+    const bValue = b[column];
+    if (typeof aValue === 'string') {
+      return currentSort.ascending ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+    }
+    return currentSort.ascending ? aValue - bValue : bValue - aValue;
+  });
+  renderItemTable();
+}
+async function loadItems() {
+  try {
+    const response = await fetch('/item_data');
+    const data = await response.json();
+    items.splice(0, items.length, ...(data.items || []));
+    sortItems(currentSort.column);
+  } catch (error) {
+    console.error('Could not load items', error);
+  }
+}
+function resetForm() {
+  document.getElementById('itemSorterForm').reset();
+  document.getElementById('itemId').value = '';
+  document.getElementById('itemSubmitButton').textContent = 'Add item';
+  document.getElementById('cancelEditButton').style.display = 'none';
+}
+function startEditItem(itemId) {
+  const item = items.find(entry => String(entry.id) === String(itemId));
+  if (!item) return;
+  document.getElementById('itemId').value = item.id;
+  document.getElementById('itemName').value = item.name;
+  document.getElementById('itemCost').value = item.cost;
+  document.getElementById('itemQty').value = item.qty;
+  document.getElementById('itemCategory').value = item.category;
+  document.getElementById('itemSubmitButton').textContent = 'Save changes';
+  document.getElementById('cancelEditButton').style.display = 'inline-block';
+}
+async function removeItem(itemId) {
+  try {
+    const response = await fetch('/item', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'remove', id: itemId })
+    });
+    const payload = await response.json();
+    if (payload.ok) {
+      await loadItems();
+    }
+  } catch (error) {
+    console.error('Could not remove item', error);
+  }
+}
+document.getElementById('cancelEditButton').addEventListener('click', resetForm);
+document.getElementById('itemSorterForm').addEventListener('submit', async function(event) {
+  event.preventDefault();
+  const itemId = document.getElementById('itemId').value;
+  const name = document.getElementById('itemName').value.trim();
+  const cost = parseFloat(document.getElementById('itemCost').value);
+  const qty = parseInt(document.getElementById('itemQty').value, 10);
+  const category = document.getElementById('itemCategory').value.trim();
+  if (!name || isNaN(cost) || isNaN(qty)) {
+    return;
+  }
+  try {
+    const response = await fetch('/item', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        action: itemId ? 'edit' : 'add',
+        id: itemId || undefined,
+        name,
+        category: category || 'Uncategorized',
+        cost,
+        qty,
+      })
+    });
+    const payload = await response.json();
+    if (payload.ok) {
+      resetForm();
+      await loadItems();
+    }
+  } catch (error) {
+    console.error('Could not save item', error);
+  }
+});
+document.querySelectorAll('#itemTable th').forEach(header => {
+  header.addEventListener('click', () => {
+    sortItems(header.dataset.sort);
+  });
+});
+loadItems();
+</script>
+<script src="/static/js/site.js"></script>
+</body>
 </html>
